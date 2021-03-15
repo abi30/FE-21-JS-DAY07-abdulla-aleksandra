@@ -14,6 +14,12 @@
         let plusBtn = plusBtns[i];
         plusBtn.addEventListener("click", plusQtt);
     }
+// available itmes;
+    let avail_itm = document.getElementsByClassName('cart-avail-item');
+    for (let i = 0; i <avail_itm.length; i++) {
+        let avail_itm = avail_itm[i];
+        // plusBtn.addEventListener("click", plusQtt);
+    }
 
     let minusBtns = document.getElementsByClassName('minus');
     for (let i = 0; i < minusBtns.length; i++) {
@@ -36,14 +42,15 @@ function addItem(e) {
     let item = e.target.parentElement.parentElement;
     let title = item.querySelector('.product-title').innerText;
     let price = item.querySelector('.product-price').innerText.replace("€", "");
+    let num_itm=item.querySelector(".avail_itm_num").innerText.replace("");
     let picSrc = item.querySelector('.product-image').src;
     // console.log(title, price, picSrc);
-    rowCreate(title, price, picSrc);
+    rowCreate(title, price, picSrc,num_itm);
     updateTotal();
 
 }
 
-function rowCreate(title, price, picSrc) {
+function rowCreate(title, price, picSrc,num_itm) {
     let cartItems = document.getElementById('cart-items');
     let cartItemsNames = cartItems.getElementsByClassName('cart-item-title');
     let cartItemQtt = cartItems.getElementsByClassName('cart-quantity');
@@ -64,6 +71,8 @@ function rowCreate(title, price, picSrc) {
         <div class="cart-item col-6 my-3 ">
             <img class="cart-item-image" src="${picSrc}" width="100" height="100">
             <span class="cart-item-title h5 ">${title}</span>
+            <span class="cart-avail-item h5 ">${num_itm}</span>
+            
         </div>
         
         <span class="cart-price col-3 h4 my-3">€ ${price}</span>
@@ -89,16 +98,41 @@ function updateTotal() {
         let price = parseFloat(cartRow.getElementsByClassName("cart-price")[0].innerText.replace("€", ""));//we need the first one
         let qtt = Number(cartRow.getElementsByClassName("cart-quantity")[0].innerText);
         console.log(price, qtt);
+    
+       
         total += (price * qtt);
-        console.log(total);
-    }
-    total = total.toFixed(2);//toFixed() will help rounding the number to 2 decimals
+
+
+        if (total>=100){
+
+
+            // total += (price * qtt);
+            var discount= (total*0.1);
+            console.log(discount);
+            total=(total-discount);
+
+
+            total = total.toFixed(2);//
+            let totalElement = document.getElementById("total").querySelector('#price');
+            // console.log(total);
+            totalElement.innerHTML = "10% discount "+"€" + total;
+
+         }
+         else{
+
+            // total = total.toFixed(2);//toFixed() will help rounding the number to 2 decimals
     let totalElement = document.getElementById("total").querySelector('#price');
     // console.log(total);
     totalElement.innerHTML = "€" + total;
+         }
+       
+        console.log(total);
+    }
+    
 }
 
 function plusQtt(e) {
+    
     let itemPlus = e.target.parentElement;
     let qtt = Number(itemPlus.querySelector('.cart-quantity').innerHTML);
     itemPlus.querySelector('.cart-quantity').innerHTML = qtt + 1;
