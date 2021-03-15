@@ -2,10 +2,12 @@
  * JavaScript Shopping Cart
  */
 
+
  function documentReady() {
     let insertBtns = document.getElementsByClassName('product-button');
     for (let i = 0; i < insertBtns.length; i++) {
         let insertBtn = insertBtns[i];
+        // var avail_itm=(avail_itms[i]-1);
         insertBtn.addEventListener("click", addItem);
     }
 
@@ -15,9 +17,11 @@
         plusBtn.addEventListener("click", plusQtt);
     }
 // available itmes;
-    let avail_itm = document.getElementsByClassName('cart-avail-item');
-    for (let i = 0; i <avail_itm.length; i++) {
-        let avail_itm = avail_itm[i];
+    let avail_itms = document.getElementsByClassName('avail_itm_num');
+    // console.log(avail_itm);
+    for (let i = 0; i <avail_itms.length; i++) {
+        console.log(avail_itms[i]);
+        var avail_itm = avail_itms[i];
         // plusBtn.addEventListener("click", plusQtt);
     }
 
@@ -42,7 +46,11 @@ function addItem(e) {
     let item = e.target.parentElement.parentElement;
     let title = item.querySelector('.product-title').innerText;
     let price = item.querySelector('.product-price').innerText.replace("€", "");
-    let num_itm=item.querySelector(".avail_itm_num").innerText.replace("");
+    var num_itm = item.querySelector(".avail_itm_num").innerText;
+     num_itm--;
+    console.log(num_itm);
+    
+    //.replace("");
     let picSrc = item.querySelector('.product-image').src;
     // console.log(title, price, picSrc);
     rowCreate(title, price, picSrc,num_itm);
@@ -71,7 +79,7 @@ function rowCreate(title, price, picSrc,num_itm) {
         <div class="cart-item col-6 my-3 ">
             <img class="cart-item-image" src="${picSrc}" width="100" height="100">
             <span class="cart-item-title h5 ">${title}</span>
-            <span class="cart-avail-item h5 ">${num_itm}</span>
+            <span class="cart-avail-item h5 ">  ${num_itm}</span>
             
         </div>
         
@@ -132,10 +140,29 @@ function updateTotal() {
 }
 
 function plusQtt(e) {
-    
+// let num_itm="";
+
+let num_itm =Number(document.querySelector(".cart-avail-item").innerHTML);
+if(num_itm >=1){
     let itemPlus = e.target.parentElement;
+  
     let qtt = Number(itemPlus.querySelector('.cart-quantity').innerHTML);
+
     itemPlus.querySelector('.cart-quantity').innerHTML = qtt + 1;
+
+
+     document.querySelector(".cart-avail-item").innerHTML=num_itm-1;
+    }else{
+        document.querySelector(".cart-avail-item").innerHTML="not available";
+    }
+   
+
+
+
+    console.log(num_itm);
+    // num_itm.value -=1;
+
+    console.log(num_itm);//9
     console.log(qtt);
     updateTotal();
 }
