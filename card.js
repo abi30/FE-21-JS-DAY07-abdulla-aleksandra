@@ -46,27 +46,32 @@ function addItem(e) {
     let item = e.target.parentElement.parentElement;
     let title = item.querySelector('.product-title').innerText;
     let price = item.querySelector('.product-price').innerText.replace("€", "");
-    var num_itm = item.querySelector(".avail_itm_num").innerText;
-     num_itm--;
-    console.log(num_itm);
+    var num_this_itm = item.querySelector(".avail_itm_num").innerText;
+     num_this_itm--;
+    console.log(num_this_itm);
     
     //.replace("");
     let picSrc = item.querySelector('.product-image').src;
     // console.log(title, price, picSrc);
-    rowCreate(title, price, picSrc,num_itm);
+    rowCreate(title, price, picSrc,num_this_itm);
     updateTotal();
 
 }
 
-function rowCreate(title, price, picSrc,num_itm) {
+function rowCreate(title, price, picSrc,num_this_itm) {
     let cartItems = document.getElementById('cart-items');
     let cartItemsNames = cartItems.getElementsByClassName('cart-item-title');
     let cartItemQtt = cartItems.getElementsByClassName('cart-quantity');
+    let cartAvialItm=cartItems.getElementsByClassName("cart-avail-item");
     for (let i = 0; i < cartItemsNames.length; i++) {
         if (cartItemsNames[i].innerText == title) {
             alert("This item already exists in your cart");
+            //  var x=num_this_itm--;
+            // console.log(x);
             let qtt = Number(cartItemQtt[i].innerHTML);
             cartItemQtt[i].innerHTML = qtt + 1;
+            let x=Number(cartAvialItm[i].innerHTML);
+            cartAvialItm[i].innerHTML=x-1;
             console.log(qtt);
             updateTotal();
             return;//it will stop our script
@@ -79,7 +84,7 @@ function rowCreate(title, price, picSrc,num_itm) {
         <div class="cart-item col-6 my-3 ">
             <img class="cart-item-image" src="${picSrc}" width="100" height="100">
             <span class="cart-item-title h5 ">${title}</span>
-            <span class="cart-avail-item h5 ">  ${num_itm}</span>
+            <span class="cart-avail-item h5 ">${num_this_itm}</span>
             
         </div>
         
@@ -92,10 +97,12 @@ function rowCreate(title, price, picSrc,num_itm) {
             <button class="del btn btn-danger rounded-circle  my-auto ms-3 fw-bold" type="button"> X </button>            
         </div>
     </div>`;
+    document.getElement
     let cart = document.getElementById('cart-items');
     cart.innerHTML += item;
     documentReady();
 }
+
 
 function updateTotal() {
     let cart = document.getElementById("cart-items");
@@ -106,41 +113,45 @@ function updateTotal() {
         let price = parseFloat(cartRow.getElementsByClassName("cart-price")[0].innerText.replace("€", ""));//we need the first one
         let qtt = Number(cartRow.getElementsByClassName("cart-quantity")[0].innerText);
         console.log(price, qtt);
-    
-       
         total += (price * qtt);
+        console.log(total);
+    }
+
+    if (total>=100){
+
+        // total += (price * qtt);
+        var discount= (total*0.1);
+        console.log(discount);
+        total=(total-discount);
+
+        total = total.toFixed(2);//
+        let totalElement = document.getElementById("total").querySelector('#price');
+        // console.log(total);
+        totalElement.innerHTML = "10% discount "+"€" + total;
+
+     }
 
 
-        if (total>=100){
 
-
-            // total += (price * qtt);
-            var discount= (total*0.1);
-            console.log(discount);
-            total=(total-discount);
-
-
-            total = total.toFixed(2);//
-            let totalElement = document.getElementById("total").querySelector('#price');
-            // console.log(total);
-            totalElement.innerHTML = "10% discount "+"€" + total;
-
-         }
-         else{
-
-            // total = total.toFixed(2);//toFixed() will help rounding the number to 2 decimals
+    // total = total.toFixed(2);//toFixed() will help rounding the number to 2 decimals
     let totalElement = document.getElementById("total").querySelector('#price');
     // console.log(total);
     totalElement.innerHTML = "€" + total;
-         }
-       
-        console.log(total);
-    }
-    
 }
+
+
+
+
+
 
 function plusQtt(e) {
 // let num_itm="";
+
+// let num_itm_terget=Number(x.innerHTML);
+// console.log(num_itm_terget);
+// querySelector(".cart-avail-item");
+
+
 
 let num_itm =Number(document.querySelector(".cart-avail-item").innerHTML);
 if(num_itm >=1){
@@ -155,17 +166,47 @@ if(num_itm >=1){
     }else{
         document.querySelector(".cart-avail-item").innerHTML="not available";
     }
-   
 
 
 
-    console.log(num_itm);
-    // num_itm.value -=1;
 
-    console.log(num_itm);//9
-    console.log(qtt);
+
+
+
+    // console.log(qtt);
     updateTotal();
 }
+
+
+
+// function minusQtt(e) {
+
+//     let num_itm_y =Number(document.querySelector(".cart-avail-item").innerHTML);
+//     console.log(num_itm_y);
+//     //  if(num_itm_y >0){
+
+
+//     let itemMinus = e.target.parentElement.parentElement;
+//     let qtt = Number(itemMinus.querySelector('.cart-quantity').innerHTML);
+//     if (qtt == 1) {
+//     console.log("There shouldn't be 0 products in the cart");
+//     delItem(e);
+//     } else {
+//     itemMinus.querySelector('.cart-quantity').innerHTML = qtt - 1;
+//     console.log(qtt);
+
+//     }
+
+//     // document.querySelector(".cart-avail-item").innerHTML=`available :${num_itm_y+1}`;
+
+
+//     //  }else{
+//     // document.querySelector(".cart-avail-item").innerHTML="not available";
+//     updateTotal();
+//     // }
+
+// }
+
 
 function minusQtt(e) {
     let itemMinus = e.target.parentElement.parentElement;
@@ -179,6 +220,14 @@ function minusQtt(e) {
         updateTotal();
     }
 }
+
+
+
+
+
+
+
+
 
 function delItem(e) {
     let delBtnAction = e.target.parentElement.parentElement.remove();
